@@ -18,7 +18,7 @@ app.use(express.json())
 
 // Index
 
-app.get('/', (req: Request, res: Response) => {
+app.get('/', (_req: Request, res: Response) => {
   res.send('Hello, World!')
 })
 
@@ -42,7 +42,16 @@ app.post('/artist', (req: Request, res: Response) => {
     if (err) return res.status(500).json({ error: err.message })
     res.status(201).json({ name })
   })
+})
 
+// Delete an artist
+app.delete('/artist/:id', (req: Request, res: Response) => {
+  const { id } = req.params;
+  const query = 'DELETE FROM artists WHERE artistId = ?'
+  db.run(query, id, (err) => {
+    if (err) return res.status(500).json({ error: err.message })
+    res.json({ delete: id })
+  })
 })
 
 
