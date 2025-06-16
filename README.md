@@ -1,1 +1,1 @@
-# sql-playground
+# My SQL Playground
