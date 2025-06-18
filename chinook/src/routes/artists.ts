@@ -3,7 +3,7 @@ import express, { Request, Response } from 'express'
 
 import sqlite3 from 'sqlite3'
 
-const router = express.Router()
+export const router = express.Router()
 
 const db = new sqlite3.Database('chinook.db', (err) => {
   if (err) {
@@ -79,5 +79,3 @@ router.get('/favorites', (_req: Request, res: Response) => {
 
   })
 })
-
-module.exports = router
