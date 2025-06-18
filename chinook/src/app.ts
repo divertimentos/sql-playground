@@ -79,6 +79,18 @@ app.delete('/artist/:id', (req: Request, res: Response) => {
   })
 })
 
+// list favorites
+app.get('/favorites', (req: Request, res: Response) => {
+  const query = 'SELECT * FROM artists WHERE isFavorite = 1'
+
+  db.all(query, (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message })
+    res.status(200).json(rows)
+
+  })
+
+})
+
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`)
