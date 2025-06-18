@@ -22,6 +22,7 @@ app.get('/', (_req: Request, res: Response) => {
   res.send('Hello, World!')
 })
 
+
 // Define a simple route that fetches data from the database
 app.get('/album', (_req: Request, res: Response) => {
   const query = 'SELECT * FROM albums;';
@@ -34,6 +35,18 @@ app.get('/album', (_req: Request, res: Response) => {
   });
 });
 
+// Get last 5 artists
+app.get('/artists', (_req: Request, res: Response) => {
+  const query = 'SELECT * FROM artists ORDER BY artistId DESC LIMIT 5'
+  db.all(query, (err, rows) => {
+    if (err) {
+      return res.status(500).json({ message: 'Database query error', error: err });
+    }
+    res.status(200).json(rows)
+  })
+})
+
+
 // Add an artist
 app.post('/artist', (req: Request, res: Response) => {
   const query = 'INSERT INTO artists (Name) VALUES (?)'
@@ -43,6 +56,20 @@ app.post('/artist', (req: Request, res: Response) => {
     res.status(201).json({ name })
   })
 })
+
+// Update artist name
+app.put('/artist/:id', (req: Request, res: Response) => {
+  const { name } = req.body
+  const { id } = req.params
+  const query = 'UPDATE artists SELECT name = ? WHERE id = ?'
+
+  db.run(query, [name, id], (err) => {
+    if (err) return res.status(500).json({ error: err.message })
+    res.json({ updateId: id, name })
+  })
+
+})
+
 
 // Delete an artist
 app.delete('/artist/:id', (req: Request, res: Response) => {
