@@ -3,9 +3,6 @@ import express, { Request, Response } from 'express'
 
 import sqlite3 from 'sqlite3'
 
-// const app = express()
-// const port = 3000
-
 const router = express.Router()
 
 const db = new sqlite3.Database('chinook.db', (err) => {
@@ -15,15 +12,6 @@ const db = new sqlite3.Database('chinook.db', (err) => {
     console.log(' Connected to the SQLite database.')
   }
 })
-
-// app.use(express.json())
-
-// Index
-
-// router.get('/', (_req: Request, res: Response) => {
-//   res.send('Hello, World!')
-// })
-
 
 // Define a simple route that fetches data from the database
 router.get('/album', (_req: Request, res: Response) => {
@@ -38,7 +26,7 @@ router.get('/album', (_req: Request, res: Response) => {
 });
 
 // Get last 5 artists
-router.get('/lastArtists', (_req: Request, res: Response) => {
+router.get('/last', (_req: Request, res: Response) => {
   const query = 'SELECT * FROM artists ORDER BY artistId DESC LIMIT 5'
   db.all(query, (err, rows) => {
     if (err) {
@@ -49,7 +37,7 @@ router.get('/lastArtists', (_req: Request, res: Response) => {
 })
 
 // Add an artist
-router.post('/artist', (req: Request, res: Response) => {
+router.post('/new', (req: Request, res: Response) => {
   const query = 'INSERT INTO artists (Name) VALUES (?)'
   const { name } = req.body
   db.run(query, [name], (err) => {
@@ -59,7 +47,7 @@ router.post('/artist', (req: Request, res: Response) => {
 })
 
 // Update artist name
-router.put('/artist/:id', (req: Request, res: Response) => {
+router.put('/edit/:id', (req: Request, res: Response) => {
   const { name } = req.body
   const { id } = req.params
   const query = 'UPDATE artists SET name = ? WHERE artistId = ?'
@@ -72,7 +60,7 @@ router.put('/artist/:id', (req: Request, res: Response) => {
 })
 
 // Delete an artist
-router.delete('/artist/:id', (req: Request, res: Response) => {
+router.delete('/delete/:id', (req: Request, res: Response) => {
   const { id } = req.params;
   const query = 'DELETE FROM artists WHERE artistId = ?'
   db.run(query, id, (err) => {
@@ -81,8 +69,8 @@ router.delete('/artist/:id', (req: Request, res: Response) => {
   })
 })
 
-// list favorites
-router.get('/favorites', (req: Request, res: Response) => {
+// list favorite artists
+router.get('/favorites', (_req: Request, res: Response) => {
   const query = 'SELECT * FROM artists WHERE isFavorite = 1'
 
   db.all(query, (err, rows) => {
@@ -90,12 +78,6 @@ router.get('/favorites', (req: Request, res: Response) => {
     res.status(200).json(rows)
 
   })
-
 })
 
 module.exports = router
-
-
-// app.listen(port, () => {
-//   console.log(`Server running on http://localhost:${port}`)
-// })
