@@ -71,3 +71,21 @@ router.get("/favorites", (_req: Request, res: Response) => {
     res.status(200).json(rows);
   });
 });
+
+router.get("/search/:q", (req: Request, res: Response) => {
+  const { q } = req.params;
+
+  const capitalized = (bandName: string) => {
+    const capitalizedFirstLetter = bandName[0].toUpperCase();
+    const rest = bandName.slice(1);
+    return capitalizedFirstLetter + rest;
+  };
+
+  const query =
+    "SELECT artists.Name, albums.Title FROM albums JOIN artists on albums.ArtistId = artists.ArtistId WHERE name = ?";
+
+  db.all(query, [capitalized(q)], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ rows });
+  });
+});
